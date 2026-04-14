@@ -1,4 +1,4 @@
 interface:
   display_name: "Workflow Orchestration"
   short_description: "Plan, sequence, verify, and track complex work"
-  default_prompt: "Use $workflow-orchestration to plan, execute, and verify this multi-step project."
+  default_prompt: "Use $workflow-orchestration to plan, execute, verify, and report this multi-step project."

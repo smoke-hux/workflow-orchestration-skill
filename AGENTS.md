@@ -1,18 +1,15 @@
----
-name: "workflow-orchestration"
-description: "Use when the user wants disciplined project execution or orchestration for a task: planning non-trivial work, breaking it into milestones, tracking progress, verifying results, and capturing lessons learned."
----
-
 # Workflow Orchestration
 
-Use this skill when the work needs stronger execution discipline than a one-shot answer.
+This file mirrors `Workflow-Orchestration.md` so tools that auto-load `AGENTS.md` use the same workflow.
+
+Use these instructions when a task is too large, risky, or multi-step for a one-shot answer.
 
 Typical triggers:
 - Multi-step implementation or debugging
 - Architectural changes with sequencing or tradeoffs
 - Research or migration work with several moving parts
 - Work that benefits from explicit progress tracking
-- Tasks where verification and follow-through matter as much as the code change
+- Tasks where verification and follow-through matter as much as the change itself
 - Reviews where findings, evidence, and next actions must stay organized
 
 ## Operating Mode
@@ -21,13 +18,13 @@ Typical triggers:
 
 - Restate the goal in concrete terms
 - Identify success criteria, constraints, risks, and likely blockers
-- Prefer one or two clarifying questions only when the ambiguity is genuinely risky
+- Ask only one or two clarifying questions when ambiguity is genuinely risky
 
 ### 2. Write a short plan
 
-- For work with multiple steps, create an explicit checklist or milestone list before implementing
+- For non-trivial work, create an explicit checklist or milestone list before implementation
 - Keep only one step in progress at a time
-- Use native planning tools when they exist; otherwise keep a concise checklist in working notes or the chat
+- Use native planning or task tools when they exist; otherwise keep the checklist in the chat or working notes
 - Re-plan when new information changes the path
 
 ### 3. Execute in small, reviewable slices
@@ -35,24 +32,24 @@ Typical triggers:
 - Prefer root-cause fixes over surface patches
 - Keep the scope as small as possible while still solving the real problem
 - Prefer reversible steps when uncertainty is high
-- Pause and ask whether there is a simpler or more elegant approach before finalizing
+- Pause and ask whether there is a simpler approach before finalizing
 
 ### 4. Match the platform
 
 - Use the current platform's native tools, rules, project instructions, tasks, or notes when they exist
-- If the platform has no special workflow tools, continue with the same process in plain text
+- If the platform has no special workflow features, keep following the same process in plain text
 - Do not mention tools or capabilities the current environment does not have
 
 ### 5. Delegate carefully when allowed
 
-- Use subagents, parallel workers, or background jobs only when the user explicitly asks for delegation or the current environment clearly supports it
+- Use subagents, parallel workers, or background jobs only when the platform supports them and the user allows them
 - Give each delegated task a single clear objective with bounded scope
 - Avoid duplicating work between the main thread and delegated work
-- If delegation is not available, continue serially without pretending it exists
+- If delegation is unavailable, continue serially without pretending it exists
 
 ### 6. Verify before calling the work done
 
-- Run the most relevant checks available: tests, builds, logs, or behavior validation
+- Run the most relevant checks available: tests, builds, logs, repro steps, or behavior validation
 - Compare expected behavior with actual behavior when possible
 - Separate verified facts from assumptions
 - Do not mark work complete without evidence
@@ -64,9 +61,8 @@ Typical triggers:
 
 ### 8. Capture reusable lessons
 
-- If the repo already uses files like `tasks/todo.md` or `tasks/lessons.md`, update them when useful
-- If those files do not exist, avoid creating process clutter unless the user wants project-level workflow docs
-- When a user correction reveals a pattern, encode that lesson in the project workflow if appropriate
+- Update existing notes, task files, or workflow docs when they already exist and the lesson is reusable
+- Avoid adding process clutter unless the user wants project-level workflow docs
 
 ## Core Principles
 
@@ -78,6 +74,6 @@ Typical triggers:
 - Re-plan instead of pushing through a broken approach
 - Keep the user unblocked with steady progress updates
 
-## Portability
+## Activation
 
-The same workflow is mirrored in the repository root `Workflow-Orchestration.md` and `AGENTS.md` so the instructions can be used in tools that do not support the Codex skill format. When a platform only supports pasted or uploaded instructions, use `Workflow-Orchestration.md` as the source text.
+When these instructions are loaded, apply them automatically to non-trivial tasks. If the user explicitly mentions workflow orchestration, structured execution, plan-and-verify, or milestone-based work, switch into this mode.
