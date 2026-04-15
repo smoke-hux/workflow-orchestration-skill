@@ -1,0 +1,42 @@
+{
+  "name": "workflow-orchestration-skill",
+  "version": "0.1.0",
+  "description": "Portable workflow orchestration instructions and installer for AI tools.",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "bin": {
+    "workflow-orchestration": "./bin/workflow-orchestration.js",
+    "workflow-orchestration-skill": "./bin/workflow-orchestration.js"
+  },
+  "files": [
+    "AGENTS.md",
+    "Workflow-Orchestration.md",
+    "bin/",
+    "workflow-orchestration/"
+  ],
+  "scripts": {
+    "check": "node --check bin/workflow-orchestration.js"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "workflow",
+    "codex",
+    "claude",
+    "cursor",
+    "copilot",
+    "gemini",
+    "chatgpt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smoke-hux/workflow-orchestration-skill.git"
+  },
+  "homepage": "https://github.com/smoke-hux/workflow-orchestration-skill#readme",
+  "bugs": {
+    "url": "https://github.com/smoke-hux/workflow-orchestration-skill/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -5,6 +5,7 @@ This repository packages the same workflow in two formats:
 - `workflow-orchestration/SKILL.md` for skill-capable agents such as Codex and Claude Code
 - `Workflow-Orchestration.md` for tools that accept plain markdown instructions, uploads, or pasted system prompts
 - `AGENTS.md` for tools that auto-read agent instructions from the repository root
+- an npm CLI that installs the right file for each target
 
 The point is to keep one workflow and make it portable across most AI tools, instead of tying it to one agent format.
 
@@ -25,10 +26,54 @@ workflow-orchestration-skill/
 ├── AGENTS.md
 ├── README.md
 ├── Workflow-Orchestration.md
+├── bin/
+│   └── workflow-orchestration.js
+├── package.json
 └── workflow-orchestration/
     ├── SKILL.md
     └── agents/
         └── openai.yaml
+```
+
+## Install from npm
+
+After you publish this package to npm, users can install or run it with:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+or:
+
+```bash
+npm install -g workflow-orchestration-skill
+workflow-orchestration
+```
+
+Running the command with no arguments opens an interactive chooser so the user can pick the AI tool they want.
+
+- Codex / skill-based agents
+- Cursor
+- Claude Code
+- GitHub Copilot
+- ChatGPT
+- Claude Projects
+- Gemini Gems
+- full project setup
+- print the portable instructions to the terminal
+
+### Advanced direct commands
+
+These still work for automation or scripts:
+
+```bash
+workflow-orchestration print
+workflow-orchestration install codex
+workflow-orchestration install cursor --dir .
+workflow-orchestration install claude-code --dir .
+workflow-orchestration install copilot --dir .
+workflow-orchestration install portable --dir .
+workflow-orchestration install project --dir .
 ```
 
 ## Install for skill-capable agents
@@ -62,6 +107,18 @@ npx skills add <owner>/<repo>
 
 That is the same pattern used by `uncodixfy`.
 
+## Install with the npm package
+
+The intended user flow is:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+Then choose the AI tool you want from the menu and the CLI writes the right file for that target.
+
+If you need automation or scripts, the advanced direct commands above still work.
+
 ## Install for other AI tools
 
 Use `Workflow-Orchestration.md` as the canonical portable instruction file.
@@ -76,7 +133,22 @@ Use `Workflow-Orchestration.md` as the canonical portable instruction file.
 
 ### Codex
 
-1. Install the `workflow-orchestration/` skill folder.
+1. Run:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+2. Choose `Codex / skill-based agents`.
+3. Start your task with:
+
+```text
+Use $workflow-orchestration for this task.
+```
+
+Manual fallback:
+
+1. Install the `workflow-orchestration/` skill folder manually.
 2. Start your task with:
 
 ```text
@@ -85,10 +157,18 @@ Use $workflow-orchestration for this task.
 
 ### Claude Code
 
-You can use either format:
+Recommended npm flow:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+Then choose `Claude Code`. This writes `CLAUDE.md` in the current project.
+
+You can also:
 
 - install the `workflow-orchestration/` skill if your setup supports skills
-- or copy the same workflow text into a root `CLAUDE.md` or project instruction file
+- or copy the same workflow text into a root `CLAUDE.md` or project instruction file manually
 
 Prompt example:
 
@@ -98,9 +178,16 @@ Use workflow orchestration for this task. Make a short plan, execute step by ste
 
 ### ChatGPT
 
-1. Open `Settings -> Personalization -> Custom Instructions`, or create a Project and add the same text there.
-2. Paste the contents of `Workflow-Orchestration.md`.
-3. Start a task with:
+1. Run:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+2. Choose `ChatGPT`.
+3. Open `Settings -> Personalization -> Custom Instructions`, or create a Project and add the same text there.
+4. Paste the generated `Workflow-Orchestration.md`, or use the print option from the CLI if you want terminal output.
+5. Start a task with:
 
 ```text
 Use workflow orchestration for this task: plan it, execute carefully, and verify before saying it is done.
@@ -108,10 +195,17 @@ Use workflow orchestration for this task: plan it, execute carefully, and verify
 
 ### Claude
 
-1. Create a Project.
-2. Click `Set project instructions`.
-3. Paste `Workflow-Orchestration.md`.
-4. Start a task with:
+1. Run:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+2. Choose `Claude Projects`.
+3. Create a Project.
+4. Click `Set project instructions`.
+5. Paste the generated `Workflow-Orchestration.md`, or use the print option from the CLI if you want terminal output.
+6. Start a task with:
 
 ```text
 Use workflow orchestration for this project. Break the work into milestones and report progress as you go.
@@ -119,10 +213,17 @@ Use workflow orchestration for this project. Break the work into milestones and 
 
 ### Gemini
 
-1. Create a Gem.
-2. Paste `Workflow-Orchestration.md` into the Gem instructions.
-3. Optionally upload related repo files under `Knowledge`.
-4. Start a task with:
+1. Run:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+2. Choose `Gemini Gems`.
+3. Create a Gem.
+4. Paste the generated `Workflow-Orchestration.md` into the Gem instructions.
+5. Optionally upload related repo files under `Knowledge`.
+6. Start a task with:
 
 ```text
 Use workflow orchestration for this task. Make a plan first, then execute in small verified steps.
@@ -130,9 +231,16 @@ Use workflow orchestration for this task. Make a plan first, then execute in sma
 
 ### Cursor
 
-1. Put the same workflow text into root `AGENTS.md`, or into a Cursor Project Rule.
-2. Open the repo in Cursor.
-3. Ask for the task directly:
+1. Run:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+2. Choose `Cursor`.
+3. This writes `AGENTS.md` into the current project.
+4. Open the repo in Cursor.
+5. Ask for the task directly:
 
 ```text
 Use workflow orchestration for this change. Keep one step in progress at a time and verify before finishing.
@@ -140,9 +248,16 @@ Use workflow orchestration for this change. Keep one step in progress at a time 
 
 ### GitHub Copilot
 
-1. Put the same workflow text into root `AGENTS.md`, `.github/copilot-instructions.md`, or your personal instructions.
-2. Open Copilot Chat in the repo context.
-3. Start with:
+1. Run:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+2. Choose `GitHub Copilot`.
+3. This writes `.github/copilot-instructions.md` into the current project.
+4. Open Copilot Chat in the repo context.
+5. Start with:
 
 ```text
 Use workflow orchestration for this task. Plan the work, implement in small slices, and call out any remaining risk.
@@ -155,6 +270,14 @@ If you want the workflow to behave the same across models, do not rewrite it per
 1. Project or system instructions: paste the contents of `Workflow-Orchestration.md`.
 2. Auto-loaded file support: mirror the same text into `AGENTS.md` at the repo root.
 3. Skill-based agents: install `workflow-orchestration/`, which mirrors the same rules in skill format.
+
+## Publish to npm
+
+Before publishing, choose a real license instead of `UNLICENSED` if you want public reuse.
+
+```bash
+npm publish
+```
 
 ## Suggested prompt
 
