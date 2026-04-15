@@ -6,6 +6,7 @@ This repository packages the same workflow in two formats:
 - `Workflow-Orchestration.md` for tools that accept plain markdown instructions, uploads, or pasted system prompts
 - `AGENTS.md` for tools that auto-read agent instructions from the repository root
 - an npm CLI that installs the right file for each target
+- GSD (Get Shit Done) integration via `.agents/skills/` so GSD planners and executors follow workflow-orchestration principles automatically
 
 The point is to keep one workflow and make it portable across most AI tools, instead of tying it to one agent format.
 
@@ -23,14 +24,14 @@ The point is to keep one workflow and make it portable across most AI tools, ins
 
 ```text
 workflow-orchestration-skill/
-├── AGENTS.md
+├── AGENTS.md                        # Auto-loaded by Cursor and Copilot
 ├── README.md
-├── Workflow-Orchestration.md
+├── Workflow-Orchestration.md        # Portable instructions for any AI tool
 ├── bin/
-│   └── workflow-orchestration.js
+│   └── workflow-orchestration.js    # Interactive CLI installer
 ├── package.json
 └── workflow-orchestration/
-    ├── SKILL.md
+    ├── SKILL.md                     # Skill format (Codex, GSD, Claude Code)
     └── agents/
         └── openai.yaml
 ```
@@ -59,6 +60,7 @@ Running the command with no arguments opens an interactive chooser so the user c
 - ChatGPT
 - Claude Projects
 - Gemini Gems
+- GSD (Get Shit Done)
 - full project setup
 - print the portable instructions to the terminal
 
@@ -69,6 +71,7 @@ These still work for automation or scripts:
 ```bash
 workflow-orchestration print
 workflow-orchestration install codex
+workflow-orchestration install gsd --dir .
 workflow-orchestration install cursor --dir .
 workflow-orchestration install claude-code --dir .
 workflow-orchestration install copilot --dir .
@@ -153,6 +156,25 @@ Manual fallback:
 
 ```text
 Use $workflow-orchestration for this task.
+```
+
+### GSD (Get Shit Done)
+
+If your project uses GSD for phase-based execution:
+
+```bash
+npx workflow-orchestration-skill
+```
+
+Choose `GSD (Get Shit Done)`. This installs the skill into `.agents/skills/workflow-orchestration/` in the current project.
+
+GSD planners and executors automatically read skills from `.agents/skills/` and follow their rules. Once installed, every `/gsd:plan-phase`, `/gsd:execute-phase`, and `/gsd:quick` task will apply workflow-orchestration principles — root-cause fixes, mandatory verification, re-plan on surprise — without any extra prompting.
+
+Manual fallback:
+
+```bash
+mkdir -p .agents/skills
+cp -r workflow-orchestration .agents/skills/
 ```
 
 ### Claude Code

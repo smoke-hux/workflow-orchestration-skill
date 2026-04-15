@@ -99,13 +99,24 @@ function installTarget(target, options = {}) {
     return;
   }
 
+  if (targetKey === "gsd") {
+    const baseDir = dirOverride || process.cwd();
+    const destination = path.join(baseDir, ".agents", "skills", "workflow-orchestration");
+    copyDirectory(skillSource, destination, force);
+    console.log(`Installed skill to ${destination}`);
+    console.log("GSD planners and executors will now pick up workflow-orchestration rules automatically.");
+    return;
+  }
+
   if (targetKey === "project") {
     const baseDir = dirOverride || process.cwd();
+    const gsdDest = path.join(baseDir, ".agents", "skills", "workflow-orchestration");
     const destinations = [
       path.join(baseDir, "Workflow-Orchestration.md"),
       path.join(baseDir, "AGENTS.md"),
       path.join(baseDir, "CLAUDE.md"),
-      path.join(baseDir, ".github", "copilot-instructions.md")
+      path.join(baseDir, ".github", "copilot-instructions.md"),
+      gsdDest
     ];
 
     for (const destination of destinations) {
@@ -116,6 +127,7 @@ function installTarget(target, options = {}) {
     copyFile(agentsSource, destinations[1], true);
     copyFile(portableSource, destinations[2], true);
     copyFile(portableSource, destinations[3], true);
+    copyDirectory(skillSource, gsdDest, true);
     console.log(`Wrote project instruction files in ${baseDir}`);
     return;
   }
@@ -170,6 +182,12 @@ async function runInteractive() {
       label: "Gemini Gems",
       note: "Write Workflow-Orchestration.md for paste/upload",
       target: "gemini",
+      defaultDir: () => process.cwd()
+    },
+    {
+      label: "GSD (Get Shit Done)",
+      note: "Install into .agents/skills/ for GSD integration",
+      target: "gsd",
       defaultDir: () => process.cwd()
     },
     {
@@ -264,6 +282,8 @@ function normalizeTarget(target) {
     cursor: "agents",
     agents: "agents",
     copilot: "copilot",
+    gsd: "gsd",
+    "get-shit-done": "gsd",
     project: "project"
   };
 
@@ -293,13 +313,18 @@ function getDestinations(target, dirOverride) {
     return [path.join(dirOverride || process.cwd(), ".github", "copilot-instructions.md")];
   }
 
+  if (targetKey === "gsd") {
+    return [path.join(dirOverride || process.cwd(), ".agents", "skills", "workflow-orchestration")];
+  }
+
   if (targetKey === "project") {
     const baseDir = dirOverride || process.cwd();
     return [
       path.join(baseDir, "Workflow-Orchestration.md"),
       path.join(baseDir, "AGENTS.md"),
       path.join(baseDir, "CLAUDE.md"),
-      path.join(baseDir, ".github", "copilot-instructions.md")
+      path.join(baseDir, ".github", "copilot-instructions.md"),
+      path.join(baseDir, ".agents", "skills", "workflow-orchestration")
     ];
   }
 
@@ -372,15 +397,17 @@ Targets:
   agents, cursor      Write AGENTS.md into the target directory
   claude-code         Write CLAUDE.md into the target directory
   copilot             Write .github/copilot-instructions.md into the target directory
+  gsd                 Install into .agents/skills/ for GSD (Get Shit Done) integration
   portable            Write Workflow-Orchestration.md into the target directory
   chatgpt             Alias for portable
   claude              Alias for portable
   gemini              Alias for portable
-  project             Write Workflow-Orchestration.md, AGENTS.md, CLAUDE.md, and .github/copilot-instructions.md
+  project             Write all repo instruction files including GSD skill
 
 Examples:
   npx workflow-orchestration-skill
   npx workflow-orchestration-skill install codex
+  npx workflow-orchestration-skill install gsd --dir .
   npx workflow-orchestration-skill install cursor --dir .
   npx workflow-orchestration-skill install claude-code --dir .
   npx workflow-orchestration-skill install copilot --dir .

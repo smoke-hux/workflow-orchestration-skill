@@ -78,6 +78,53 @@ Typical triggers:
 - Re-plan instead of pushing through a broken approach
 - Keep the user unblocked with steady progress updates
 
+## GSD Integration
+
+When GSD (Get Stuff Done) is available, workflow-orchestration actively uses GSD's infrastructure instead of ad-hoc checklists. GSD owns the phase lifecycle; this skill provides the execution discipline and routes to GSD commands at each stage.
+
+### Detection
+
+GSD is active when `.planning/ROADMAP.md` exists in the working directory. GSD is available (but no project initialized) when `/gsd:help` is a recognized command.
+
+### Routing — how each operating step maps to GSD
+
+| Step | Without GSD | With GSD |
+|------|-------------|----------|
+| 1. Lock the objective | Restate goal in chat | Read `.planning/PROJECT.md` and `STATE.md` for context. If no GSD project exists and the work is substantial, use `/gsd:new-project` to initialize |
+| 2. Write a plan | Ad-hoc checklist | Use `/gsd:discuss-phase` to gather context, then `/gsd:plan-phase` to produce a structured PLAN.md. For assumptions, use `/gsd:list-phase-assumptions` first |
+| 3. Execute | Inline implementation | Use `/gsd:execute-phase` for wave-based parallel execution with atomic commits. For lightweight single tasks, use `/gsd:quick` |
+| 4. Match platform | Use whatever tools exist | GSD IS the platform — use its state tracking, checkpoints, deviation rules, and agent infrastructure |
+| 5. Delegate | Serial unless user allows | GSD agents handle delegation: gsd-planner, gsd-executor, gsd-verifier, gsd-debugger, gsd-phase-researcher |
+| 6. Verify | Manual checks | Use `/gsd:verify-work` for goal-backward verification (truths, artifacts, key links) |
+| 7. Report | Chat summary | GSD produces SUMMARY.md per plan; use `/gsd:progress` for current status |
+| 8. Capture lessons | Update task/lesson files | GSD persists decisions in CONTEXT.md and STATE.md. Use `/gsd:add-todo` for deferred ideas |
+
+### When to use which GSD command
+
+- **New project or major initiative** → `/gsd:new-project` (creates PROJECT.md, ROADMAP.md, full phase breakdown)
+- **Planning a specific phase** → `/gsd:plan-phase` (produces PLAN.md with tasks, verification, checkpoints)
+- **Quick context gathering before planning** → `/gsd:discuss-phase` (adaptive questioning)
+- **Executing planned work** → `/gsd:execute-phase` (atomic commits, deviation handling, wave parallelization)
+- **Small self-contained task** → `/gsd:quick` (GSD guarantees without full ceremony)
+- **Debugging** → `/gsd:debug` (persistent debug state across context resets)
+- **Checking progress** → `/gsd:progress` (shows status and routes to next action)
+- **Resuming after a break** → `/gsd:resume-work` (full context restoration)
+- **Validating delivered work** → `/gsd:verify-work` (conversational UAT)
+- **Adding urgent work mid-flight** → `/gsd:insert-phase` (decimal phases like 72.1)
+- **Milestone complete** → `/gsd:audit-milestone` then `/gsd:complete-milestone`
+
+### For GSD agents
+
+When GSD spawns specialized agents (planners, executors, verifiers), those agents should apply workflow-orchestration's core principles:
+
+- **Planners**: Restate the phase objective concretely, prefer granular independently-committable tasks, include a `verify` step per task, flag high-uncertainty tasks for reversible approaches
+- **Executors**: Fix root causes not symptoms, run every `verify` step before marking tasks done, stop and report if the plan turns out to be wrong rather than pushing through
+- **Verifiers**: Compare expected vs actual behavior against stated success criteria, flag any verification that relies on inference rather than direct observation
+
+### Standalone mode
+
+When GSD is not active and not available, this skill operates independently using its full operating mode (sections 1–8 above). It uses whatever planning and task tools the current platform provides.
+
 ## Portability
 
 The same workflow is mirrored in the repository root `Workflow-Orchestration.md` and `AGENTS.md` so the instructions can be used in tools that do not support the Codex skill format. When a platform only supports pasted or uploaded instructions, use `Workflow-Orchestration.md` as the source text.

@@ -74,6 +74,34 @@ Typical triggers:
 - Re-plan instead of pushing through a broken approach
 - Keep the user unblocked with steady progress updates
 
+## GSD Integration
+
+When GSD (Get Stuff Done) is available, this workflow actively routes to GSD commands instead of ad-hoc checklists. GSD owns the phase lifecycle; this workflow provides execution discipline and command routing at each stage.
+
+**Detection:** GSD is active when `.planning/ROADMAP.md` exists. GSD is available (but uninitialized) when `/gsd:help` is recognized.
+
+**Routing — each operating step maps to GSD:**
+
+| Step | Without GSD | With GSD |
+|------|-------------|----------|
+| 1. Lock objective | Restate in chat | Read `.planning/PROJECT.md` + `STATE.md`; use `/gsd:new-project` if no project exists |
+| 2. Write plan | Ad-hoc checklist | `/gsd:discuss-phase` → `/gsd:plan-phase` for structured PLAN.md |
+| 3. Execute | Inline | `/gsd:execute-phase` (atomic commits, waves); `/gsd:quick` for small tasks |
+| 4. Match platform | Use available tools | GSD's state tracking, checkpoints, deviation rules, agent infrastructure |
+| 5. Delegate | Serial | GSD agents: gsd-planner, gsd-executor, gsd-verifier, gsd-debugger |
+| 6. Verify | Manual checks | `/gsd:verify-work` (goal-backward: truths, artifacts, key links) |
+| 7. Report | Chat summary | SUMMARY.md per plan; `/gsd:progress` for status |
+| 8. Lessons | Update task files | CONTEXT.md + STATE.md; `/gsd:add-todo` for deferred ideas |
+
+**Key commands:** `/gsd:new-project` (init) · `/gsd:plan-phase` (plan) · `/gsd:execute-phase` (run) · `/gsd:quick` (lightweight) · `/gsd:debug` (persistent debugging) · `/gsd:verify-work` (UAT) · `/gsd:progress` (status) · `/gsd:resume-work` (restore context) · `/gsd:insert-phase` (urgent work) · `/gsd:audit-milestone` + `/gsd:complete-milestone` (close out)
+
+**For GSD agents** — apply workflow-orchestration core principles:
+- **Planners**: Restate phase objective concretely, prefer granular independently-committable tasks, include `verify` per task, flag high-uncertainty for reversible approaches
+- **Executors**: Fix root causes not symptoms, run every `verify` step before marking done, stop and report if plan is wrong
+- **Verifiers**: Compare expected vs actual against success criteria, flag inference-based verification
+
+When GSD is not active and not available, this workflow operates standalone using its full operating mode above.
+
 ## Activation
 
 When these instructions are loaded, apply them automatically to non-trivial tasks. If the user explicitly mentions workflow orchestration, structured execution, plan-and-verify, or milestone-based work, switch into this mode.
