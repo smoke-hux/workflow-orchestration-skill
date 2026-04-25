@@ -12,10 +12,12 @@
     "AGENTS.md",
     "Workflow-Orchestration.md",
     "bin/",
+    "test/",
     "workflow-orchestration/"
   ],
   "scripts": {
-    "check": "node --check bin/workflow-orchestration.js"
+    "check": "node --check bin/workflow-orchestration.js",
+    "test:security": "node test/security-smoke-test.js"
   },
   "keywords": [
     "ai",

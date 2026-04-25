@@ -16,8 +16,10 @@ The point is to keep one workflow and make it portable across most AI tools, ins
 
 - restate the objective
 - write a short plan
+- gather only the context needed to make the next correct decision
+- automatically split heavy tasks across subagents when the platform supports it
 - execute in small steps
-- verify before claiming success
+- apply quality gates and verify before claiming success
 - report progress and remaining risk clearly
 
 ## Repository layout
@@ -84,9 +86,17 @@ workflow-orchestration install project --dir .
 ### Local install
 
 ```bash
+npx workflow-orchestration-skill install codex
+```
+
+Manual copy fallback for trusted local directories only:
+
+```bash
 mkdir -p ~/.agents/skills
 cp -r workflow-orchestration ~/.agents/skills/
 ```
+
+The CLI performs path and symlink safety checks that raw `cp -r` does not. Use manual copy only when you trust the source and destination paths.
 
 Then invoke it with either:
 
@@ -168,7 +178,7 @@ npx workflow-orchestration-skill
 
 Choose `GSD (Get Shit Done)`. This installs the skill into `.agents/skills/workflow-orchestration/` in the current project.
 
-GSD planners and executors automatically read skills from `.agents/skills/` and follow their rules. Once installed, every `/gsd:plan-phase`, `/gsd:execute-phase`, and `/gsd:quick` task will apply workflow-orchestration principles — root-cause fixes, mandatory verification, re-plan on surprise — without any extra prompting.
+GSD planners and executors automatically read skills from `.agents/skills/` and follow their rules. Once installed, every `/gsd:plan-phase`, `/gsd:execute-phase`, and `/gsd:quick` task will apply workflow-orchestration principles — efficient context gathering, root-cause fixes, automatic subagent delegation for heavy tasks, mandatory verification, re-plan on surprise — without any extra prompting.
 
 Manual fallback:
 
@@ -176,6 +186,8 @@ Manual fallback:
 mkdir -p .agents/skills
 cp -r workflow-orchestration .agents/skills/
 ```
+
+The CLI install path is preferred because it rejects symlinked targets and protected directories. Use manual copy only in trusted project directories.
 
 ### Claude Code
 
@@ -304,5 +316,5 @@ npm publish
 ## Suggested prompt
 
 ```text
-Use workflow orchestration for this task: make a plan, execute in small steps, verify the result, and keep me updated.
+Use workflow orchestration for this task: make a concise plan, use subagents for heavy independent work when supported, execute in small steps, verify the result, and keep me updated.
 ```
