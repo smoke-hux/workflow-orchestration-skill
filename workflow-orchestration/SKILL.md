@@ -111,7 +111,7 @@ Typical triggers:
 
 ## GSD Integration
 
-When GSD (Get Stuff Done) is available, workflow-orchestration actively uses GSD's infrastructure instead of ad-hoc checklists. GSD owns the phase lifecycle; this skill provides the execution discipline and routes to GSD commands at each stage.
+When GSD (Get Shit Done) is available, workflow-orchestration actively uses GSD's infrastructure instead of ad-hoc checklists. GSD owns the phase lifecycle; this skill provides the execution discipline and routes to GSD commands at each stage.
 
 ### Detection
 

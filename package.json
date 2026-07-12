@@ -1,6 +1,6 @@
 {
   "name": "workflow-orchestration-skill",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Portable workflow orchestration instructions and installer for AI tools.",
   "license": "UNLICENSED",
   "type": "commonjs",
@@ -17,7 +17,9 @@
   ],
   "scripts": {
     "check": "node --check bin/workflow-orchestration.js",
-    "test:security": "node test/security-smoke-test.js"
+    "test": "npm run check && npm run test:security",
+    "test:security": "node test/security-smoke-test.js",
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "ai",

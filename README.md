@@ -32,6 +32,8 @@ workflow-orchestration-skill/
 ├── bin/
 │   └── workflow-orchestration.js    # Interactive CLI installer
 ├── package.json
+├── test/
+│   └── security-smoke-test.js       # Installer safety tests (npm test)
 └── workflow-orchestration/
     ├── SKILL.md                     # Skill format (Codex, GSD, Claude Code)
     └── agents/
@@ -76,6 +78,7 @@ workflow-orchestration install codex
 workflow-orchestration install gsd --dir .
 workflow-orchestration install cursor --dir .
 workflow-orchestration install claude-code --dir .
+workflow-orchestration install claude-md --dir .
 workflow-orchestration install copilot --dir .
 workflow-orchestration install portable --dir .
 workflow-orchestration install project --dir .
@@ -197,12 +200,15 @@ Recommended npm flow:
 npx workflow-orchestration-skill
 ```
 
-Then choose `Claude Code`. This writes `CLAUDE.md` in the current project.
+Then choose `Claude Code`. This installs the skill into `.claude/skills/workflow-orchestration/` in the current project. Claude Code discovers skills there automatically and loads them only when the task matches, so the workflow does not consume context in every session and your existing `CLAUDE.md` stays untouched.
 
-You can also:
+For a personal install that applies to every project:
 
-- install the `workflow-orchestration/` skill if your setup supports skills
-- or copy the same workflow text into a root `CLAUDE.md` or project instruction file manually
+```bash
+npx workflow-orchestration-skill install claude-code --dir ~
+```
+
+If you prefer the older always-loaded approach, `install claude-md` still writes the full workflow text into `CLAUDE.md` (it refuses to overwrite an existing file unless you pass `--force`).
 
 Prompt example:
 

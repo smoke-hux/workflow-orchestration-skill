@@ -44,6 +44,33 @@ runTest("allows forced overwrite of regular files only", (tmpDir) => {
   assert.match(fs.readFileSync(agentsFile, "utf8"), /Workflow Orchestration/);
 });
 
+runTest("installs claude-code target as a skill directory", (tmpDir) => {
+  const projectDir = path.join(tmpDir, "project");
+
+  fs.mkdirSync(projectDir);
+
+  const result = run(["install", "claude-code", "--dir", projectDir]);
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+
+  const skillFile = path.join(projectDir, ".claude", "skills", "workflow-orchestration", "SKILL.md");
+  assert.match(fs.readFileSync(skillFile, "utf8"), /Workflow Orchestration/);
+  assert.equal(fs.existsSync(path.join(projectDir, "CLAUDE.md")), false);
+});
+
+runTest("rejects symlinked claude skill destination", (tmpDir) => {
+  const projectDir = path.join(tmpDir, "project");
+  const outsideDir = path.join(tmpDir, "outside");
+
+  fs.mkdirSync(projectDir);
+  fs.mkdirSync(outsideDir);
+  fs.mkdirSync(path.join(projectDir, ".claude"));
+  fs.symlinkSync(outsideDir, path.join(projectDir, ".claude", "skills"), "dir");
+
+  const result = run(["install", "claude-code", "--dir", projectDir, "--force"]);
+  assertFailed(result, /symbolic link/);
+  assert.equal(fs.existsSync(path.join(outsideDir, "workflow-orchestration")), false);
+});
+
 runTest("rejects broken symlink destinations", (tmpDir) => {
   const projectDir = path.join(tmpDir, "project");
   const missingFile = path.join(tmpDir, "missing.txt");

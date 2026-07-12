@@ -107,7 +107,7 @@ Typical triggers:
 
 ## GSD Integration
 
-When GSD (Get Stuff Done) is available, this workflow actively routes to GSD commands instead of ad-hoc checklists. GSD owns the phase lifecycle; this workflow provides execution discipline and command routing at each stage.
+When GSD (Get Shit Done) is available, this workflow actively routes to GSD commands instead of ad-hoc checklists. GSD owns the phase lifecycle; this workflow provides execution discipline and command routing at each stage.
 
 **Detection:** GSD is active when `.planning/ROADMAP.md` exists. GSD is available (but uninitialized) when `/gsd:help` is recognized.
 

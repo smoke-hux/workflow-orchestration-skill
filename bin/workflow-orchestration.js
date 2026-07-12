@@ -23,6 +23,11 @@ async function main() {
     return;
   }
 
+  if (hasFlag("--version") || hasFlag("-v")) {
+    console.log(require(path.join(rootDir, "package.json")).version);
+    return;
+  }
+
   if (args.length === 0) {
     if (!process.stdin.isTTY || !process.stdout.isTTY) {
       printHelp();
@@ -87,6 +92,15 @@ function installTarget(target, options = {}) {
     return;
   }
 
+  if (targetKey === "claude-skill") {
+    const baseDir = resolveBaseDir(dirOverride || process.cwd());
+    const destination = path.join(baseDir, ".claude", "skills", "workflow-orchestration");
+    copyDirectory(skillSource, destination, force, baseDir);
+    console.log(`Installed skill to ${destination}`);
+    console.log("Claude Code loads skills from .claude/skills/ automatically when they match the task.");
+    return;
+  }
+
   if (targetKey === "claude-md") {
     const baseDir = resolveBaseDir(dirOverride || process.cwd());
     const destination = path.join(baseDir, "CLAUDE.md");
@@ -115,12 +129,13 @@ function installTarget(target, options = {}) {
   if (targetKey === "project") {
     const baseDir = resolveBaseDir(dirOverride || process.cwd());
     const gsdDest = path.join(baseDir, ".agents", "skills", "workflow-orchestration");
+    const claudeSkillDest = path.join(baseDir, ".claude", "skills", "workflow-orchestration");
     const writes = [
       { kind: "file", source: portableSource, destination: path.join(baseDir, "Workflow-Orchestration.md") },
       { kind: "file", source: agentsSource, destination: path.join(baseDir, "AGENTS.md") },
-      { kind: "file", source: portableSource, destination: path.join(baseDir, "CLAUDE.md") },
       { kind: "file", source: portableSource, destination: path.join(baseDir, ".github", "copilot-instructions.md") },
-      { kind: "directory", source: skillSource, destination: gsdDest }
+      { kind: "directory", source: skillSource, destination: gsdDest },
+      { kind: "directory", source: skillSource, destination: claudeSkillDest }
     ];
 
     for (const write of writes) {
@@ -163,7 +178,7 @@ async function runInteractive() {
     },
     {
       label: "Claude Code",
-      note: "Write CLAUDE.md into a project",
+      note: "Install skill into .claude/skills/ in a project",
       target: "claude-code",
       defaultDir: () => process.cwd()
     },
@@ -279,8 +294,10 @@ function normalizeTarget(target) {
   const aliases = {
     codex: "skill",
     skill: "skill",
-    "claude-code": "claude-md",
-    claudecode: "claude-md",
+    "claude-code": "claude-skill",
+    claudecode: "claude-skill",
+    "claude-skill": "claude-skill",
+    "claude-md": "claude-md",
     claude: "portable",
     chatgpt: "portable",
     gemini: "portable",
@@ -312,6 +329,10 @@ function getDestinations(target, dirOverride) {
     return [path.join(dirOverride || process.cwd(), "AGENTS.md")];
   }
 
+  if (targetKey === "claude-skill") {
+    return [path.join(dirOverride || process.cwd(), ".claude", "skills", "workflow-orchestration")];
+  }
+
   if (targetKey === "claude-md") {
     return [path.join(dirOverride || process.cwd(), "CLAUDE.md")];
   }
@@ -329,9 +350,9 @@ function getDestinations(target, dirOverride) {
     return [
       path.join(baseDir, "Workflow-Orchestration.md"),
       path.join(baseDir, "AGENTS.md"),
-      path.join(baseDir, "CLAUDE.md"),
       path.join(baseDir, ".github", "copilot-instructions.md"),
-      path.join(baseDir, ".agents", "skills", "workflow-orchestration")
+      path.join(baseDir, ".agents", "skills", "workflow-orchestration"),
+      path.join(baseDir, ".claude", "skills", "workflow-orchestration")
     ];
   }
 
@@ -601,20 +622,22 @@ Usage:
   workflow-orchestration
   workflow-orchestration print
   workflow-orchestration install <target> [--dir <path>] [--force]
+  workflow-orchestration --version
 
 Running without arguments opens an interactive chooser in a terminal.
 
 Targets:
   skill, codex        Install the SKILL.md bundle into ~/.agents/skills
   agents, cursor      Write AGENTS.md into the target directory
-  claude-code         Write CLAUDE.md into the target directory
+  claude-code         Install the skill into .claude/skills/ in the target directory
+  claude-md           Write CLAUDE.md into the target directory (legacy full-text install)
   copilot             Write .github/copilot-instructions.md into the target directory
   gsd                 Install into .agents/skills/ for GSD (Get Shit Done) integration
   portable            Write Workflow-Orchestration.md into the target directory
   chatgpt             Alias for portable
   claude              Alias for portable
   gemini              Alias for portable
-  project             Write all repo instruction files including GSD skill
+  project             Write all repo instruction files including GSD and Claude Code skills
 
 Examples:
   npx workflow-orchestration-skill
